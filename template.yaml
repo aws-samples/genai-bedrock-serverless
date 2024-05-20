@@ -1,0 +1,162 @@
+Transform: AWS::Serverless-2016-10-31
+Description: "Agents for Bedrock Support Bot Implementation"
+
+Outputs:
+  CloudOpsSupportBucketArn:
+    Value: !GetAtt CloudOpsSupportBucket.Arn
+  ProductDocsBucketArn:
+    Value: !GetAtt ProductDocsBucket.Arn
+  Region:
+    Description: Deployed Region
+    Value: !Ref AWS::Region
+
+Resources:
+  CloudOpsSupportLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.11
+      Timeout: 720
+      Role: !GetAtt 'CloudOpsSupportLambdaExecutionRole.Arn'
+      CodeUri: ./src/
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
+      MemorySize: 1280
+      EphemeralStorage:
+        Size: 5120
+
+
+  BedrockPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Effect: Allow
+          Action: bedrock:*
+          Resource: '*'
+
+  AmazonBedrockExecutionRoleForAgents:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: bedrock.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+        - !Ref BedrockPolicy
+      RoleName: 'AmazonBedrockExecutionRoleForAgents_CloudOps'
+  
+  
+  CloudOpsSupportLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Ref BedrockPolicy
+      
+
+  ResourcePolicy:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt 'CloudOpsSupportLambda.Arn'
+      Principal: bedrock.amazonaws.com
+      SourceAccount: !Sub ${AWS::AccountId}
+      SourceArn: !Sub arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/*
+ 
+  CloudOpsSupportBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - HEAD
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+        
+  CloudOpsSupportBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      PolicyDocument:
+        Id: EnforceHttpsPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: EnforceHttpsSid
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Sub "arn:aws:s3:::${CloudOpsSupportBucket}/*"
+              - !Sub "arn:aws:s3:::${CloudOpsSupportBucket}"
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+      Bucket: !Ref CloudOpsSupportBucket
+      
+  ProductDocsBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "s3-productdocs-${AWS::AccountId}-${AWS::Region}"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - HEAD
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+        
+  ProductDocsBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      PolicyDocument:
+        Id: EnforceHttpsPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: EnforceHttpsSid
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Sub "arn:aws:s3:::${ProductDocsBucket}/*"
+              - !Sub "arn:aws:s3:::${ProductDocsBucket}"
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+      Bucket: !Ref ProductDocsBucket
