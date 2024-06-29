@@ -23,19 +23,9 @@ Resources:
         Variables:
           BUCKET_NAME: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
       MemorySize: 1280
+      ReservedConcurrentExecutions: 100
       EphemeralStorage:
         Size: 5120
-
-
-  BedrockPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          Effect: Allow
-          Action: bedrock:*
-          Resource: '*'
 
   AmazonBedrockExecutionRoleForAgents:
     Type: AWS::IAM::Role
@@ -50,7 +40,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSLambda_FullAccess
-        - !Ref BedrockPolicy
+        - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
       RoleName: 'AmazonBedrockExecutionRoleForAgents_CloudOps'
   
   
@@ -67,7 +57,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - !Ref BedrockPolicy
+        - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
       
 
   ResourcePolicy:
@@ -83,6 +73,13 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LoggingBucket
+        LogFilePrefix: testing-logs
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
@@ -101,6 +98,34 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
         
+  LoggingBucket:
+    Type: 'AWS::S3::Bucket'
+
+  LoggingBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref LoggingBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:PutObject'
+            Effect: Allow
+            Principal:
+              Service: logging.s3.amazonaws.com
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref LoggingBucket
+                - /*
+            Condition:
+              ArnLike:
+                'aws:SourceArn': !GetAtt 
+                  - CloudOpsSupportBucket
+                  - Arn
+              StringEquals:
+                'aws:SourceAccount': !Sub '${AWS::AccountId}'
+
   CloudOpsSupportBucketPolicy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
@@ -124,6 +149,10 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "s3-productdocs-${AWS::AccountId}-${AWS::Region}"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
