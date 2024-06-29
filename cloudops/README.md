@@ -18,7 +18,7 @@ cd cloudops
 ```
 ### Install
 
-1. From the _agentsforbedrock-cloudops_ folder, deploy the SAM template for the solution:
+1. From the _cloudops_ folder, deploy the SAM template for the solution:
 ```
 sam build -t template.yaml
 sam deploy --resolve-s3 --stack-name <anyname> --capabilities CAPABILITY_NAMED_IAM
@@ -75,7 +75,7 @@ By selecting **Show trace** for the response, a dialog box shows the reasoning t
 
 To avoid recurring charges, and to clean up your account after trying the solution outlined in this post, perform the following steps:
 
-1. From the _agentsforbedrock-cloudops_ folder, delete the SAM template for the solution:
+1. From the _cloudops_ folder, delete the SAM template for the solution:
 ```
 sam delete --stack-name <yourstackname> --capabilities CAPABILITY_NAMED_IAM
 ```
