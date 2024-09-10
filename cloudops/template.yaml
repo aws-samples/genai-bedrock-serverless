@@ -14,8 +14,8 @@ Resources:
   CloudOpsSupportLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: lambda_function.lambda_handler
-      Runtime: python3.11
+      Handler: cloudopssupport.lambda_handler
+      Runtime: python3.9
       Timeout: 720
       Role: !GetAtt 'CloudOpsSupportLambdaExecutionRole.Arn'
       CodeUri: ./src/
