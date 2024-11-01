@@ -1,0 +1,38 @@
+
+resource "aws_ecr_repository" "chatbot" {
+  name                 = "chatbot"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+data "aws_ecr_authorization_token" "token" {}
+
+# configure docker provider
+provider "docker" {
+  registry_auth {
+      address = data.aws_ecr_authorization_token.token.proxy_endpoint
+      username = data.aws_ecr_authorization_token.token.user_name
+      password  = data.aws_ecr_authorization_token.token.password
+    }
+}
+
+# build docker image
+resource "docker_image" "chatbot-image" {
+  name = "${aws_ecr_repository.chatbot.repository_url}:latest"
+  platform = "linux/amd64"
+  build {
+    context = "../chatapp"
+    tag = ["${aws_ecr_repository.chatbot.repository_url}:latest"]
+    platform = "linux/amd64"
+    no_cache = true
+  }
+}
+# push image to ecr repo
+resource "docker_registry_image" "push-chat-image" {
+  name = docker_image.chatbot-image.name
+}
+

@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatapp
+  template:
+    metadata:
+      labels:
+        app: chatapp
+    spec:
+      containers:
+        - name: chatapp
+          image: 689069515280.dkr.ecr.us-east-2.amazonaws.com/chatbot:latest
+          ports:
+            - name: http
+              containerPort: 8501
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 128Mi
+              cpu: 100m
