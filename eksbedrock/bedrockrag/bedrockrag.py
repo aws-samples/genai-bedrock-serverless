@@ -16,19 +16,29 @@ from langchain_community.vectorstores import OpenSearchVectorSearch
 if __name__ == "__main__":
     main()
 
-def lambda_handler(event, context):
-    if "session_id" not in event or "prompt" not in event or "bedrock_model_id" not in event or "model_kwargs" not in event or "metadata" not in event or "memory_window" not in event:
-        return {
-            'statusCode': 400,
-            'body': "Invalid input. Missing required fields."
-        }
-    
-    prompt = event["prompt"]
-    bedrock_model_id = event["bedrock_model_id"]
-    model_kwargs = event["model_kwargs"]
-    metadata = event["metadata"]
-    memory_window = event["memory_window"]
-    session_id = event["session_id"]
+def main():
+  
+    #prompt = event["prompt"]
+    prompt = os.environ['prompt'] 
+    #bedrock_model_id = event["bedrock_model_id"]
+    bedrock_model_id = os.environ['bedrock_model_id']
+    #model_kwargs = event["model_kwargs"]
+    #model_kwargs = os.environ['model_kwargs']
+    #metadata = event["metadata"]
+    metadata = os.environ['metadata']
+    #memory_window = event["memory_window"]
+    memory_window = os.environ['memory_window']
+    #session_id = event["session_id"]
+    session_id = os.environ['session_id']
+    region = os.environ['AWS_REGION']
+
+    model_kwargs_json = {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": 500
+    }
+
+    model_kwargs = json.dumps(model_kwargs_json)
 
     if "temperature" in model_kwargs and (model_kwargs["temperature"] < 0 or model_kwargs["temperature"] > 1):
         return {
@@ -55,7 +65,7 @@ def lambda_handler(event, context):
             'body': "Invalid input. os_host is empty."
         }
     
-    region = os.environ.get('AWS_REGION', 'us-east-1')  # Default to us-east-1 if AWS_REGION is not set
+    #region = os.environ.get('AWS_REGION', 'us-east-1')  # Default to us-east-1 if AWS_REGION is not set
 
     # TODO implement
     conversation = init_conversationchain(session_id, region, bedrock_model_id,model_kwargs, metadata, memory_window, os_host)

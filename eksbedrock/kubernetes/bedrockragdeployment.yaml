@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bedrockragapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bedrockrag
+  template:
+    metadata:
+      labels:
+        app: bedrockrag
+    spec:
+      containers:
+        - name: bedrockrag
+          image: 689069515280.dkr.ecr.us-east-2.amazonaws.com/bedrockrag:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: bedrockrag-config
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 128Mi
+              cpu: 100m
