@@ -9,7 +9,7 @@ data:
   metadata: "NA"
   memory_window: 10
   AWS_Region: "us-east-2"
-  session_id: 1
-  aoss_host: "aoss_host_name" 
+  session_id: "1"
+  aoss_host: "aoss_host_name"
 
 
