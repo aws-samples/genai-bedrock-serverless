@@ -1,27 +1,27 @@
 Transform: AWS::Serverless-2016-10-31
-Description: "Agents for Bedrock Support Bot Implementation"
+Description: "Agents for Bedrock Informatica IDMC Agent orchestration"
 
 Outputs:
-  CloudOpsSupportBucketArn:
-    Value: !GetAtt CloudOpsSupportBucket.Arn
-  ProductDocsBucketArn:
-    Value: !GetAtt ProductDocsBucket.Arn
+  IDMCBucketArn:
+    Value: !GetAtt IDMCBucket.Arn
+  BusinessAppsBucketArn:
+    Value: !GetAtt BusinessAppsBucket.Arn
   Region:
     Description: Deployed Region
     Value: !Ref AWS::Region
 
 Resources:
-  CloudOpsSupportLambda:
+  IDMCLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: cloudopssupport.lambda_handler
+      Handler: idmc.lambda_handler
       Runtime: python3.9
       Timeout: 720
-      Role: !GetAtt 'CloudOpsSupportLambdaExecutionRole.Arn'
+      Role: !GetAtt 'IDMCLambdaExecutionRole.Arn'
       CodeUri: ./src/
       Environment:
         Variables:
-          BUCKET_NAME: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
+          BUCKET_NAME: !Sub "s3-idmc-${AWS::AccountId}-${AWS::Region}"
       MemorySize: 1280
       ReservedConcurrentExecutions: 100
       EphemeralStorage:
@@ -41,10 +41,10 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSLambda_FullAccess
         - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
-      RoleName: 'AmazonBedrockExecutionRoleForAgents_CloudOps'
+      RoleName: 'AmazonBedrockExecutionRoleForAgents_IDMC'
   
   
-  CloudOpsSupportLambdaExecutionRole:
+  IDMCLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -64,15 +64,15 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt 'CloudOpsSupportLambda.Arn'
+      FunctionName: !GetAtt 'IDMCLambda.Arn'
       Principal: bedrock.amazonaws.com
       SourceAccount: !Sub ${AWS::AccountId}
       SourceArn: !Sub arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/*
  
-  CloudOpsSupportBucket:
+  IDMCBucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Sub "s3-cloudopssupport-${AWS::AccountId}-${AWS::Region}"
+      BucketName: !Sub "s3-idmc-${AWS::AccountId}-${AWS::Region}"
       BucketEncryption: 
         ServerSideEncryptionConfiguration: 
         - ServerSideEncryptionByDefault:
@@ -121,12 +121,12 @@ Resources:
             Condition:
               ArnLike:
                 'aws:SourceArn': !GetAtt 
-                  - CloudOpsSupportBucket
+                  - IDMCBucket
                   - Arn
               StringEquals:
                 'aws:SourceAccount': !Sub '${AWS::AccountId}'
 
-  CloudOpsSupportBucketPolicy:
+  IDMCBucketPolicy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
       PolicyDocument:
@@ -138,17 +138,17 @@ Resources:
             Principal: "*"
             Action: "s3:*"
             Resource:
-              - !Sub "arn:aws:s3:::${CloudOpsSupportBucket}/*"
-              - !Sub "arn:aws:s3:::${CloudOpsSupportBucket}"
+              - !Sub "arn:aws:s3:::${IDMCBucket}/*"
+              - !Sub "arn:aws:s3:::${IDMCBucket}"
             Condition:
               Bool:
                 "aws:SecureTransport": "false"
-      Bucket: !Ref CloudOpsSupportBucket
+      Bucket: !Ref IDMCBucket
       
-  ProductDocsBucket:
+  BusinessAppsBucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Sub "s3-productdocs-${AWS::AccountId}-${AWS::Region}"
+      BucketName: !Sub "s3-businessapps-${AWS::AccountId}-${AWS::Region}"
       BucketEncryption: 
         ServerSideEncryptionConfiguration: 
         - ServerSideEncryptionByDefault:
@@ -171,7 +171,7 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
         
-  ProductDocsBucketPolicy:
+  BusinessAppsBucketPolicy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
       PolicyDocument:
@@ -183,9 +183,9 @@ Resources:
             Principal: "*"
             Action: "s3:*"
             Resource:
-              - !Sub "arn:aws:s3:::${ProductDocsBucket}/*"
-              - !Sub "arn:aws:s3:::${ProductDocsBucket}"
+              - !Sub "arn:aws:s3:::${BusinessAppsBucket}/*"
+              - !Sub "arn:aws:s3:::${BusinessAppsBucket}"
             Condition:
               Bool:
                 "aws:SecureTransport": "false"
-      Bucket: !Ref ProductDocsBucket
+      Bucket: !Ref BusinessAppsBucket
