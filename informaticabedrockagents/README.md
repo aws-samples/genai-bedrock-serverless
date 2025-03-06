@@ -37,7 +37,7 @@ In our scenario, the business analyst is looking to obtain context specific data
 
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
-![Solution Architecture](/informaticabedrockagents/images/informaticabedrockagentarch.png)
+![Solution Architecture](/informaticabedrockagents/images/informaticabedrockagentarch.PNG)
 
 ### Setup
 
