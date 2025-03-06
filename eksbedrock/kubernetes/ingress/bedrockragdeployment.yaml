@@ -13,9 +13,11 @@ spec:
       labels:
         app: bedrockrag
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - name: bedrockrag
-          image: 689069515280.dkr.ecr.us-east-2.amazonaws.com/bedrockragrepo:latest
+          image: 575481363195.dkr.ecr.us-east-1.amazonaws.com/bedrockragrepo:latest
           ports:
             - name: http
               containerPort: 8080

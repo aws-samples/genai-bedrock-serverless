@@ -7,8 +7,8 @@ data:
   prompt: "what is fsxontap"
   bedrock_model_id: "anthropic.claude-3-sonnet-20240229-v1:0"
   metadata: "NA"
-  memory_window: 10
-  AWS_Region: "us-east-2"
+  memory_window: "10"
+  AWS_Region: "us-east-1"
   session_id: "1"
   aoss_host: "aoss_host_name"
 

@@ -1,12 +1,4 @@
 
-provider "aws" {
-  region = var.aws_region
-
-  default_tags {
-    tags = local.tags
-  }
-}
-
 locals {
   tags = {
     project = "eksbedrock"
@@ -18,7 +10,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 
   filter {
-    name   = "group-name"
+    name   = "region-name"
     values = [var.aws_region]
   }
 }

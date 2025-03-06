@@ -33,11 +33,11 @@ provider "docker" {
 
 # build docker image
 resource "docker_image" "chatbot-image" {
-  name = "${aws_ecr_repository.chatbot.repository_url}:latest"
+  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:latest"
   platform = "linux/amd64"
   build {
     context = "../chatapp"
-    tag = ["${aws_ecr_repository.chatbot.repository_url}:latest"]
+    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:latest"]
     platform = "linux/amd64"
     no_cache = true
   }
@@ -45,11 +45,11 @@ resource "docker_image" "chatbot-image" {
 
 # build docker image
 resource "docker_image" "bedrockrag-image" {
-  name = "${aws_ecr_repository.chatbot.repository_url}:latest"
+  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:latest"
   platform = "linux/amd64"
   build {
     context = "../bedrockrag"
-    tag = ["${aws_ecr_repository.chatbot.repository_url}:latest"]
+    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:latest"]
     platform = "linux/amd64"
     no_cache = true
   }
