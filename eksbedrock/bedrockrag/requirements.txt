@@ -1,4 +1,4 @@
 fastapi==0.100.0            # Web framework for the API
 uvicorn==0.22.0             # ASGI server to run FastAPI
-pydantic==1.10.0            # Data validation and serialization
+pydantic==1.10.13            # Data validation and serialization
 requests==2.31.0            # HTTP client (if needed for API calls)
