@@ -12,7 +12,7 @@ app = FastAPI()
 
 
 # Boto3 client for AWS Bedrock
-bedrock_agent_runtime = boto3.client(service_name="bedrock-agent-runtime", region_name='us-east-1')
+bedrock_agent_runtime = boto3.client(service_name="bedrock-agent-runtime", region_name='us-east-2')
 
 class QueryRequest(BaseModel):
     prompt: str
@@ -38,8 +38,8 @@ def retrieve_and_generate(query: str, kb_id: str):
         retrieveAndGenerateConfiguration={
             'type': 'KNOWLEDGE_BASE',
             'knowledgeBaseConfiguration': {
-                'knowledgeBaseId': 'PNMTFQRPDF',
-                'modelArn': 'arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-text-premier-v1:0'
+                'knowledgeBaseId': kb_id,
+                'modelArn': 'arn:aws:bedrock:us-east-2::foundation-model/amazon.titan-text-premier-v1:0'
             }
         }
     )

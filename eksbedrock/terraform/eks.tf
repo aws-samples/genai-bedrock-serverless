@@ -49,9 +49,5 @@ module "eks" {
       capacity_type  = "SPOT"
     }
   }
-
-  tags = {
-    Environment = "staging"
-  }
 }
 
