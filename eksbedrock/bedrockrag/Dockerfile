@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
 
 COPY ./ ./
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    pip3 install --upgrade boto3 botocore
 
 EXPOSE 8080
 
-ENTRYPOINT ["python3", "bedrockrag.py"]
+CMD ["uvicorn", "bedrockrag:app", "--host", "0.0.0.0", "--port", "8080"]
+

@@ -10,11 +10,10 @@ spec:
   rules:
   - http:
       paths:
-        - path: /chat
-          backend:
-            serviceName: chatservice
-            servicePort: 8080
         - path: /bedrockrag
+          pathType: Prefix  # Required field
           backend:
-            serviceName: bedrockragservice
-            servicePort: 8080
+            service:
+              name: bedrockragservice  # Correct field
+              port:
+                number: 8080  # Correct field
