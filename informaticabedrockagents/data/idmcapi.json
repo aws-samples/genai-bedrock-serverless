@@ -10,6 +10,7 @@
 		"/get_error_description": {
 			"get": {
 				"description": "Get error description based on HTTP error code and timestamp ",
+				"operationId": "geterrordescription",
 				"parameters": [
 					{
 						"name": "httperrorcode",
