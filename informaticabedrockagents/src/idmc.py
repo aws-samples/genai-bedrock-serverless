@@ -1,6 +1,6 @@
 import json
 import boto3
-import requests
+import urllib3
 import logging
 import os
 
@@ -16,10 +16,22 @@ def invoke_aws_rag_agent(prompt):
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
+    http = urllib3.PoolManager()
     try:
-        response = requests.get(url, params={"prompt": prompt}, headers=headers)
-        response.raise_for_status()  # Raise an HTTPError for bad responses
-        data = response.json()  # Assuming the response is in JSON format
+        response = http.request(
+            "GET",
+            url,
+            fields={"prompt": prompt},
+            headers=headers
+        )
+
+        # Check if the response status is OK
+        if response.status != 200:
+            logger.error(f"HTTP error: {response.status}")
+            return {"error": f"HTTP error: {response.status}"}
+        
+        # Decode response data
+        data = json.loads(response.data.decode("utf-8"))
         return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
     
     except requests.exceptions.RequestException as e:

@@ -12,6 +12,7 @@
     "/AWSRAGAgent" : {
       "post" : {
         "operationId" : "AWSRAGAgentOperation",
+        "description" : "Provides supplier, product or lead time information",
         "requestBody" : {
           "content" : {
             "application/json" : {
