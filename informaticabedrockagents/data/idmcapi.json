@@ -1,78 +1,79 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "AWSRAGAgent",
-    "description" : "Provides supplier, product or lead time information",
-    "version" : "1.0.0"
-  },
-  "servers" : [ {
-    "url" : "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl"
-  } ],
-  "paths" : {
-    "/AWSRAGAgent" : {
-      "post" : {
-        "operationId" : "AWSRAGAgentOperation",
-        "description" : "Provides supplier, product or lead time information",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AWSRAGAgentRequest"
-              }
-            },
-            "application/xml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AWSRAGAgentRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "End",
-            "content" : {
-              "text/plain" : {
-                "schema" : {
-                  "type" : "string",
-                  "description" : ""
-                }
-              }
-            }
-          }
-        },
-        "x-codegen-request-body-name" : "body"
-      }
-    }
-  },
-  "components" : {
-    "schemas" : {
-      "InfaAnyObject" : {
-        "type" : "object",
-        "description" : "Any process object."
-      },
-      "AWSRAGAgentRequest" : {
-        "required" : [ "prompt" ],
-        "type" : "object",
-        "properties" : {
-          "role" : {
-            "type" : "string",
-            "description" : ""
-          },
-          "messages" : {
-            "$ref" : "#/components/schemas/InfaAnyObject"
-          },
-          "summarize" : {
-            "type" : "boolean",
-            "description" : ""
-          },
-          "prompt" : {
-            "type" : "string",
-            "description" : ""
-          }
-        }
-      }
-    }
-  },
-  "x-original-swagger-version" : "2.0"
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Error Description API",
+		"description": "Gets internal error description",
+		"version": "1.0.0"
+	},
+
+	"paths": {
+		"/AWSRAGAgentSupplier": {
+			"post": {
+				"operationId" : "Supplier",
+        		"description" : "Provides supplier information for a specified supplier",
+        		"parameters": [
+					{
+						"name": "identifier",
+						"in": "query",
+						"description": "Supplier identifier",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "API Response based on prompt" ,
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"APIResponse": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/AWSRAGAgentProduct": {
+			"post": {
+				"operationId" : "Product",
+        		"description" : "Provides product information for a specified product",
+        		"parameters": [
+					{
+						"name": "identifier",
+						"in": "query",
+						"description": "Product identifier",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "API Response based on prompt" ,
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"APIResponse": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
