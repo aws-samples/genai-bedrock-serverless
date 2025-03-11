@@ -1,4 +1,0 @@
-HTTPErrorCode,Timestamp,Description
-500,202404219:00,DBClusterRoleAlreadyExists
-400,202404220:00,DBClusterRoleQuotaExceeded
-400,202404221:00,InvalidDBClusterStateFault
