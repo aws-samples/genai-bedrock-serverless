@@ -10,18 +10,24 @@ logger.setLevel(logging.INFO)
 
 
 def invoke_aws_rag_agent(prompt):
-  
     url = "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
+
+    # Create HTTP pool manager
     http = urllib3.PoolManager()
+    
+    # Create the request payload
+    payload = json.dumps({"prompt": prompt})
+
     try:
+        # Make the POST request
         response = http.request(
-            "GET",
+            "POST",
             url,
-            fields={"prompt": prompt},
+            body=payload,
             headers=headers
         )
 
@@ -34,7 +40,7 @@ def invoke_aws_rag_agent(prompt):
         data = json.loads(response.data.decode("utf-8"))
         return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
     
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logger.error(f"Error fetching agent response: {e}")
         return {"error": "Failed to fetch agent response"}
     
