@@ -33,15 +33,9 @@ sam deploy --resolve-s3 --stack-name <anyname> --capabilities CAPABILITY_NAMED_I
 
 ### Solution Overview
 
-In our solution, we start with a custom application running on an [Amazon EC2](https://aws.amazon.com/ec2/) instance or on an instance outside AWS (on-premise or hybrid cloud) where an [Amazon CloudWatch Agent](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UseCloudWatchUnifiedAgent.html) installed on the instance streams the application’s log file to Amazon CloudWatch Logs. [Here’s detailed documentation on installing the unified CloudWatch Logs agent on your Windows or Linux systems](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html). You can also [use AWS Systems Manager to install and update the CloudWatch Agent on your EC2 or hybrid instances](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/installing-cloudwatch-agent-ssm.html). Once you have your application logs streamed into CloudWatch, [you can then export your log file to Amazon S3 by following the steps documented here](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3ExportTasks.html). Our solution assumes that you have completed the CloudWatch setup for your custom application and we have provided you a sample application log file (in .csv format) that you uploaded to S3 in the pre-requisites section.
-
-In our scenario, the support analyst is looking to resolve an error based on an HTTP error code and timestamp of the error provided by the application. In order for the Bedrock agent to fulfill the user request, we configure the agent with 1/ an action group that defines an API schema for actions and an [AWS Lambda](https://aws.amazon.com/lambda/) function that implements the actions that the agent can perform and 2/ a knowledge base that is basically an AWS managed vector database (Amazon OpenSearch Serverless in our case) that provides a repository of information that the agent can query to answer customer queries and improve its generated responses. The agent creates prompts and determines the right sequence of tasks from the developer-provided instructions (“You are an agent that provides error resolution and other information such as affected application component based on the HTTP error code and timestamp of the error.”), API schemas needed to complete the tasks, and the knowledge base. Specifically, here’s the flow orchestrated by the agent for our scenario:
-
-![Agent Flow](/cloudops/images/flow-arch.png)
-
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
-![Solution Architecture](/cloudops/images/solution-arch.png)
+![Solution Architecture](/images/solution-arch.png)
 
 ### Setup
 
