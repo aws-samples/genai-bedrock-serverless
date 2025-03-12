@@ -5,15 +5,23 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 spec:
   ingressClassName: alb
   rules:
   - http:
       paths:
-        - path: /bedrockrag
-          pathType: Prefix  # Required field
+        - path: /health
+          pathType: Exact
           backend:
             service:
-              name: bedrockragservice  # Correct field
-              port:
-                number: 8080  # Correct field
+              name: bedrockragservice
+              port: 
+                number: 8080  # Consistent port specification
+        - path: /query
+          pathType: Prefix
+          backend:
+            service:
+              name: bedrockragservice
+              port: 
+                number: 8080  # Consistent port specification
