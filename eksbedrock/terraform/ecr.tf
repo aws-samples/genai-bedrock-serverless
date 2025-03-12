@@ -1,15 +1,4 @@
 
-resource "aws_ecr_repository" "chatbot" {
-  name                 = "chatbot"
-  image_tag_mutability = "MUTABLE"
-  force_delete = true
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-
-
 resource "aws_ecr_repository" "bedrockragrepo" {
   name                 = "bedrockragrepo"
   image_tag_mutability = "MUTABLE"
@@ -31,17 +20,6 @@ provider "docker" {
     }
 }
 
-# build docker image
-resource "docker_image" "chatbot-image" {
-  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:latest"
-  platform = "linux/amd64"
-  build {
-    context = "../chatapp"
-    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:latest"]
-    platform = "linux/amd64"
-    no_cache = true
-  }
-}
 
 # build docker image
 resource "docker_image" "bedrockrag-image" {
@@ -53,11 +31,6 @@ resource "docker_image" "bedrockrag-image" {
     platform = "linux/amd64"
     no_cache = true
   }
-}
-
-# push image to ecr repo
-resource "docker_registry_image" "push-chat-image" {
-  name = docker_image.chatbot-image.name
 }
 
 # push image to ecr repo
