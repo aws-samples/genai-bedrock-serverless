@@ -35,7 +35,7 @@ sam deploy --resolve-s3 --stack-name <anyname> --capabilities CAPABILITY_NAMED_I
 
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
-![Solution Architecture](/images/solution-arch.png)
+![Solution Architecture](/images/solution-arch.PNG)
 
 ### Setup
 
