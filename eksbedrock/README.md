@@ -31,6 +31,29 @@ terraform apply -auto-approve
 
 ### Configure EKS
 
+1. Configure a secret for the ECR registry:
+```
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <your account id>.dkr.ecr.<your account region>.amazonaws.com
+
+docker pull <your account id>.dkr.ecr.us-east-2.amazonaws.com/bedrockragrepo:latest
+
+aws eks update-kubeconfig --region <your region> --name eksbedrock
+
+kubectl create secret docker-registry ecr-secret \
+  --docker-server=<your account id>.dkr.ecr.<your account region>.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password --region <your account region>)
+
+```
+2. Navigate to the _kubernetes/ingress_ folder. 
+    1. Ensure that the _AWS_Region_ variable in the bedrockragconfigmap.yaml file points to your AWS region.
+    2. Replace the image URI in line 20 of the bedrockragdeployment.yaml file with the image URI of your bedrockrag image from your ECR repository.
+
+3. Provision the Kubernetes deployment, service and ingress:
+```
+cd ..
+kubectl apply -f ingress/
+```
 
 ### Configure Bedrock
 
@@ -65,9 +88,8 @@ By selecting **Show trace** for the response, a dialog box shows the reasoning t
 
 To avoid recurring charges, and to clean up your account after trying the solution outlined in this post, perform the following steps:
 
-1. From the _cloudops_ folder, delete the SAM template for the solution:
+1. From the _terraform_ folder, delete the Terraform template for the solution:
 ```
-sam delete --stack-name <yourstackname> --capabilities CAPABILITY_NAMED_IAM
+terraform apply --destroy
 ```
-2. Delete the Amazon Bedrock Agent. From the Amazon Bedrock console, select the Agent you created in this solution, select Delete and follow the steps to delete the agent
-3. Delete the Amazon Bedrock knowledge base. From the Amazon Bedrock console, select the knowledge base you created in this solution, select Delete and follow the steps to delete the knowledge base
+2. Delete the Amazon Bedrock knowledge base. From the Amazon Bedrock console, select the knowledge base you created in this solution, select Delete and follow the steps to delete the knowledge base
