@@ -12,7 +12,8 @@
 1. Ensure you have [model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) for both the Anthropic Claude v3 and Titan Text Embedding models available on Amazon Bedrock.
 2. Install [AWS CLI](https://aws.amazon.com/cli)
 3. Install [Docker](https://docs.docker.com/engine/install/)
-4. [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+4. Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+5. [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ### Deploy the solution
 Cloning the repository and using the Terraform template will provision all the components of this solution:
