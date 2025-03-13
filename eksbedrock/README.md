@@ -56,10 +56,6 @@ cd ..
 kubectl apply -f ingress/
 ```
 
-### Configure Bedrock
-
-1. Create an Amazon Bedrock knowledge base. Follow the steps [here](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html) to create a knowledge base. Accept all the defaults including using the **Quick create a new vector store** option in Step 7 that creates an Amazon OpenSearch Serverless vector search collection as your knowledge base. 
-    1. In Step 5c where you need to provide the S3 URI of the object containing the files for the data source for the knowledge base
 
 ### Solution Overview
 
