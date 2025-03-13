@@ -14,6 +14,11 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     disk_size = 50
+    ebs_optimized = true
+    # Attach BedrockFullAccess to all node group roles
+    iam_role_additional_policies = {
+      AmazonBedrockFullAccess = "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
+    }
   }
 
   eks_managed_node_groups = {
