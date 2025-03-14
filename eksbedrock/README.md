@@ -7,6 +7,9 @@
 3. Provide a highly available API interface that allows for pluggable front ends and event driven invocation of LLMs
 
 
+AWS serverless services make it straightforward to focus on building generative AI applications by providing automatic scaling, built-in high availability, and a pay-for-use billing model. Event-driven compute with AWS Lambda is a good fit for compute-intensive, on-demand tasks such as document embedding and flexible large language model (LLM) orchestration, and Amazon API Gateway provides an API interface that allows for pluggable frontends and event-driven invocation of the LLMs. Our solution also demonstrates how to build a scalable, automated, API-driven serverless application layer on top of Amazon Bedrock and FSx for ONTAP using API Gateway and Lambda.
+
+The solution implements a RAG Retrieval Lambda function that allows RAG with Amazon Bedrock by enriching the generative AI prompt using Amazon Bedrock APIs with your company-specific data and associated metadata (including ACLs) retrieved from the OpenSearch Serverless index that was populated by the embeddings container component. The RAG Retrieval Lambda function stores conversation history for the user interaction in an Amazon DynamoDB table.
 
 ### Prerequisites
 
@@ -59,6 +62,14 @@ kubectl apply -f ingress/
 
 
 ### Solution Overview
+
+The solution uses Amazon EKS managed node groups to automate the provisioning and lifecycle management of nodes (Amazon EC2 instances) for the Amazon EKS Kubernetes cluster. Every managed node in the cluster is provisioned as part of an Amazon EC2 Auto Scaling group that’s managed for you by EKS.
+
+The EKS cluster consists of a Kubernetes deployment that runs across 2 Availability Zones for high availability where each node in the deployment hosts multiple replicas of a Bedrock RAG container image pulled from Amazon Elastic Container Registry (ECR). This setup makes sure that resources are used efficiently, scaling up or down based on the demand. 
+
+The RAG Bedrock container uses Bedrock Knowledge Base APIs and a Bedrock hosted Claude 3.5 Sonnet LLM to implement a RAG workflow. The solution provides the end user with a scalable endpoint to access the RAG workflow using a Kubernetes service that is fronted by an Amazon Application Load Balancer provisioned via an EKS ingress controller. 
+
+The RAG Bedrock container orchestrated by EKS enables RAG with Amazon Bedrock by enriching the generative AI prompt received from the ALB endpoint with data retrieved from an OpenSearch Serverless index that is synced via Bedrock Knowledge Bases from your company specific data uploaded to Amazon S3.
 
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
