@@ -4,6 +4,6 @@ metadata:
   name: bedrockrag-config
   namespace: default
 data:
-  AWS_Region: "us-east-2"
+  AWS_Region: "us-east-1"
 
 

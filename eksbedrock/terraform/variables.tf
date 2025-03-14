@@ -4,7 +4,7 @@ variable "vpc_cidr" {
   description = "default CIDR range of the VPC"
 }
 variable "aws_region" {
-  default = "us-east-2"
+  default = "us-east-1"
   description = "aws region"
 }
 
@@ -13,9 +13,4 @@ variable "cluster_name" {
   description = "cluster name"
 }
 
-variable "collection_name" {
-  default     = "eksbedrock"
-  description = "default collection name"
-  
-}
 
