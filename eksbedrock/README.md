@@ -6,11 +6,6 @@
 2. Automate ingestion of data from multiple data sources using Bedrock Knowledgebases
 3. Provide a highly available API interface that allows for pluggable front ends and event driven invocation of LLMs
 
-
-AWS serverless services make it straightforward to focus on building generative AI applications by providing automatic scaling, built-in high availability, and a pay-for-use billing model. Event-driven compute with AWS Lambda is a good fit for compute-intensive, on-demand tasks such as document embedding and flexible large language model (LLM) orchestration, and Amazon API Gateway provides an API interface that allows for pluggable frontends and event-driven invocation of the LLMs. Our solution also demonstrates how to build a scalable, automated, API-driven serverless application layer on top of Amazon Bedrock and FSx for ONTAP using API Gateway and Lambda.
-
-The solution implements a RAG Retrieval Lambda function that allows RAG with Amazon Bedrock by enriching the generative AI prompt using Amazon Bedrock APIs with your company-specific data and associated metadata (including ACLs) retrieved from the OpenSearch Serverless index that was populated by the embeddings container component. The RAG Retrieval Lambda function stores conversation history for the user interaction in an Amazon DynamoDB table.
-
 ### Prerequisites
 
 1. Ensure you have [model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) for both the Anthropic Claude v3 and Titan Text Embedding models available on Amazon Bedrock.
@@ -60,7 +55,6 @@ cd ..
 kubectl apply -f ingress/
 ```
 
-
 ### Solution Overview
 
 The solution uses Amazon EKS managed node groups to automate the provisioning and lifecycle management of nodes (Amazon EC2 instances) for the Amazon EKS Kubernetes cluster. Every managed node in the cluster is provisioned as part of an Amazon EC2 Auto Scaling group that’s managed for you by EKS.
@@ -74,7 +68,6 @@ The RAG Bedrock container orchestrated by EKS enables RAG with Amazon Bedrock by
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
 ![Solution Architecture](/eksbedrock/images/solution-arch.png)
-
 
 
 ### Test and Validate
