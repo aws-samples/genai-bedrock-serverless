@@ -63,6 +63,15 @@ kubectl apply -f ingress/
 
 ### Solution Overview
 
+The solution uses Amazon EKS managed node groups to automate the provisioning and lifecycle management of nodes (Amazon EC2 instances) for the Amazon EKS Kubernetes cluster. Every managed node in the cluster is provisioned as part of an Amazon EC2 Auto Scaling group that’s managed for you by EKS.
+
+The EKS cluster consists of a Kubernetes deployment that runs across 2 Availability Zones for high availability where each node in the deployment hosts multiple replicas of a Bedrock RAG container image pulled from Amazon Elastic Container Registry (ECR). This setup makes sure that resources are used efficiently, scaling up or down based on the demand. 
+
+The RAG Bedrock container uses Bedrock Knowledge Base APIs and a Bedrock hosted Claude 3.5 Sonnet LLM to implement a RAG workflow. The solution provides the end user with a scalable endpoint to access the RAG workflow using a Kubernetes service that is fronted by an Amazon Application Load Balancer provisioned via an EKS ingress controller. 
+
+The RAG Bedrock container orchestrated by EKS enables RAG with Amazon Bedrock by enriching the generative AI prompt received from the ALB endpoint with data retrieved from an OpenSearch Serverless index that is synced via Bedrock Knowledge Bases from your company specific data uploaded to Amazon S3.
+
+
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
 ![Solution Architecture](/eksbedrock/images/solution-arch.png)
