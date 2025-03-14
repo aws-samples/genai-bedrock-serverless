@@ -71,7 +71,6 @@ The RAG Bedrock container uses Bedrock Knowledge Base APIs and a Bedrock hosted 
 
 The RAG Bedrock container orchestrated by EKS enables RAG with Amazon Bedrock by enriching the generative AI prompt received from the ALB endpoint with data retrieved from an OpenSearch Serverless index that is synced via Bedrock Knowledge Bases from your company specific data uploaded to Amazon S3.
 
-
 Here’s a high-level architecture diagram that illustrates the various components of our solution working together as described in the flow above:
 
 ![Solution Architecture](/eksbedrock/images/solution-arch.png)
