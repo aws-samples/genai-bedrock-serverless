@@ -33,7 +33,7 @@ terraform apply -auto-approve
 
 1. Configure a secret for the ECR registry:
 ```
-aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <your account id>.dkr.ecr.<your account region>.amazonaws.com
+aws ecr get-login-password --region <your region> | docker login --username AWS --password-stdin <your account id>.dkr.ecr.<your account region>.amazonaws.com
 
 docker pull <your account id>.dkr.ecr.us-east-2.amazonaws.com/bedrockragrepo:latest
 
