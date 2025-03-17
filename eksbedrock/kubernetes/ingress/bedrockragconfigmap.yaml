@@ -5,5 +5,6 @@ metadata:
   namespace: default
 data:
   AWS_Region: "us-east-1"
+  MODEL_ID: "anthropic.claude-3-5-sonnet-20240620-v1:0"
 
 

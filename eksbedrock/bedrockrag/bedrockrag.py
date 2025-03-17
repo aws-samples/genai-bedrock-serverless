@@ -7,17 +7,19 @@ from pydantic import BaseModel
 from io import StringIO
 import sys
 
+# Load configuration from environment variables
+aws_region = os.getenv("AWS_Region", "us-east-1")
+default_model_id = os.getenv("MODEL_ID", "anthropic.claude-3-5-sonnet-20240620-v1:0")
+
 # Initialize FastAPI app
 app = FastAPI()
 
-
-# Boto3 client for AWS Bedrock
-bedrock_agent_runtime = boto3.client(service_name="bedrock-agent-runtime", region_name='us-east-1')
+# Create Boto3 client for AWS Bedrock using dynamic region from the environment variable
+bedrock_agent_runtime = boto3.client(service_name="bedrock-agent-runtime", region_name=aws_region)
 
 class QueryRequest(BaseModel):
     prompt: str
     kbId: str
-    modelId: str = "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-text-premier-v1:0" 
 
 def print_ww(*args, width: int = 100, **kwargs):
     """Wraps and prints output text"""
@@ -32,8 +34,8 @@ def print_ww(*args, width: int = 100, **kwargs):
     for line in output.splitlines():
         print("\n".join(textwrap.wrap(line, width=width)))
 
-def retrieve_and_generate(query: str, kb_id: str, model_id: str):
-    """Retrieves response from AWS Bedrock with a parameterized model"""
+def retrieve_and_generate(query: str, kb_id: str):
+    """Retrieves response from AWS Bedrock with a parameterized model using default model ID"""
     try:
         response = bedrock_agent_runtime.retrieve_and_generate(
             input={'text': query},
@@ -41,7 +43,7 @@ def retrieve_and_generate(query: str, kb_id: str, model_id: str):
                 'type': 'KNOWLEDGE_BASE',
                 'knowledgeBaseConfiguration': {
                     'knowledgeBaseId': kb_id,
-                    'modelArn': model_id  # Use modelId from request
+                    'modelArn': default_model_id  # Use default model ID from the environment
                 }
             }
         )
@@ -54,14 +56,11 @@ def retrieve_and_generate(query: str, kb_id: str, model_id: str):
 async def health():
     return {"status": "ok"}
 
-
 @app.post("/query")
 async def handle_query(request: QueryRequest):
-    """API endpoint to process user queries"""
+    """API endpoint to process user queries without a modelId parameter"""
     try:
-        response_text = retrieve_and_generate(request.prompt, request.kbId, request.modelId)
+        response_text = retrieve_and_generate(request.prompt, request.kbId)
         return {"response": response_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# Test changes
