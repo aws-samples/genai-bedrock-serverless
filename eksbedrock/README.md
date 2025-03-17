@@ -35,7 +35,7 @@ terraform apply -auto-approve
 ```
 aws ecr get-login-password --region <your region> | docker login --username AWS --password-stdin <your account id>.dkr.ecr.<your account region>.amazonaws.com
 
-docker pull <your account id>.dkr.ecr.us-east-2.amazonaws.com/bedrockragrepo:latest
+docker pull <your account id>.dkr.ecr.<your region>.amazonaws.com/bedrockragrepo:latest
 
 aws eks update-kubeconfig --region <your region> --name eksbedrock
 
@@ -87,7 +87,7 @@ You can query the model directly using the API front end provided by the AWS App
 ```
 curl -X POST "http://k8s-default-bedrockr-9cf4294101-1183110034.us-east-2.elb.amazonaws.com/query" \
      -H "Content-Type: application/json" \
-     -d '{"prompt": "What is a bedrock knowledgebase?", "kbId": "L9R1EJRXNY", "modelId": "anthropic.claude-3-5-sonnet-20240620-v1:0"}'
+     -d '{"prompt": "What is a bedrock knowledgebase?", "kbId": "L9R1EJRXNY"}'
 ```
 ### Clean up
 
