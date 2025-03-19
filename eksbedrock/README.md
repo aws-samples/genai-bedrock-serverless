@@ -46,7 +46,7 @@ kubectl create secret docker-registry ecr-secret \
 
 ```
 2. Navigate to the _kubernetes/ingress_ folder. 
-    1. Ensure that the _AWS_Region_ variable in the bedrockragconfigmap.yaml file points to your AWS region.
+    1. Replace the _AWS_Region_ variable and the _model_id_ parameter in the bedrockragconfigmap.yaml file with your AWS region and your Claude v3 model identifier respectively.
     2. Replace the image URI in line 20 of the bedrockragdeployment.yaml file with the image URI of your bedrockrag image from your ECR repository.
 
 3. Provision the Kubernetes deployment, service and ingress:
@@ -74,20 +74,20 @@ Here’s a high-level architecture diagram that illustrates the various componen
 
 #### Create Knowledgebase and load data 
 
-1. Create an S3 bucket and upload your data into the bucket. In our blog we uploaded these 2 files - into our S3 bucket. 
+1. Create an S3 bucket and upload your data into the bucket. In our blog we uploaded these 2 files - [Amazon Bedrock User Guide](https://docs.aws.amazon.com/pdfs/bedrock/latest/userguide/bedrock-ug.pdf) and [Amazon FSxONTAP User Guide](https://docs.aws.amazon.com/pdfs/fsx/latest/ONTAPGuide/ONTAPGuide.pdf#getting-started) into our S3 bucket. 
 2. Create an Amazon Bedrock knowledge base. Follow the steps [here](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html) to create a knowledge base. Accept all the defaults including using the **Quick create a new vector store** option in Step 7 that creates an Amazon OpenSearch Serverless vector search collection as your knowledge base. 
     1. In Step 5c, provide the S3 URI of the object containing the files for the data source for the knowledge base
     2. Once the knowledge base gets provisioned, obtain the Knowledge base id (kbId) from the Bedrock agents console.
 
 ### Query using the AWS Application Load Balancer 
 
-You can query the model directly using the API front end provided by the AWS Application Load Balancer provisioned by the Kubernetes (EKS) Ingress Controller. Obtain this API by navigating to the ALB console.
+You can query the model directly using the API front end provided by the AWS Application Load Balancer provisioned by the Kubernetes (EKS) Ingress Controller. Navigate to the AWS ALB console and obtain the DNS name for your ALB to use as your API:
 
-1. Here’s the curl request you can use for invoking the ALB API for a query related to a document (Bedrock user guide) we uploaded to our data source. Provide the value of the *kbId* parameter and the *modelId* parameter. 
+1. Here’s the curl request you can use for invoking the ALB API for a query related to a document (Bedrock user guide) we uploaded to our data source. Provide the value of the *ALB DNS* and the *kbId* parameter
 ```
-curl -X POST "http://k8s-default-bedrockr-9cf4294101-1183110034.us-east-2.elb.amazonaws.com/query" \
+curl -X POST "<ALB DNS Name>/query" \
      -H "Content-Type: application/json" \
-     -d '{"prompt": "What is a bedrock knowledgebase?", "kbId": "L9R1EJRXNY"}'
+     -d '{"prompt": "What is a bedrock knowledgebase?", "kbId": "<Knowledge Base ID>"}'
 ```
 ### Clean up
 
