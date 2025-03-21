@@ -19,6 +19,9 @@ Resources:
       Timeout: 720
       Role: !GetAtt 'IDMCLambdaExecutionRole.Arn'
       CodeUri: ./src/
+      Environment:
+        Variables:
+          IDMC_URL: "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
       MemorySize: 1280
       ReservedConcurrentExecutions: 100
       EphemeralStorage:
@@ -66,13 +69,6 @@ Resources:
       SourceAccount: !Sub ${AWS::AccountId}
       SourceArn: !Sub arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/*
  
-  LambdaLayerPermission:
-    Type: AWS::Lambda::LayerVersionPermission
-    Properties:
-      Action: lambda:GetLayerVersion
-      LayerVersionArn: arn:aws:lambda:ap-southeast-1:113088814899:layer:Klayers-p39-packaging:1
-      Principal: *
-
   IDMCBucket:
     Type: "AWS::S3::Bucket"
     Properties:
