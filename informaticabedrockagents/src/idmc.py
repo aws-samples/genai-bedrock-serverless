@@ -8,10 +8,11 @@ import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+idmcurl = os.environ.get('IDMC_URL')  #Name of bucket with data file and OpenAPI file
 
 
 def invoke_aws_rag_agent_supplier(identifier):
-    url = "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
+    #url = "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json"
@@ -29,7 +30,7 @@ def invoke_aws_rag_agent_supplier(identifier):
         # Make the POST request
         response = http.request(
             "POST",
-            url,
+            idmcurl,
             body=payload,
             headers=headers,
             timeout=Timeout(50)
@@ -50,7 +51,7 @@ def invoke_aws_rag_agent_supplier(identifier):
     
 
 def invoke_aws_rag_agent_product(identifier):
-    url = "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
+    #url = "https://usw1-cai.dmp-us.informaticacloud.com:443/active-bpel/public/rt/37gfTBWcbO7fgYmIsNrMkl/AWSRAGAgent"
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json"
@@ -68,7 +69,7 @@ def invoke_aws_rag_agent_product(identifier):
         # Make the POST request
         response = http.request(
             "POST",
-            url,
+            idmcurl,
             body=payload,
             headers=headers,
             timeout=Timeout(50)
@@ -109,7 +110,7 @@ def lambda_handler(event, context):
     #    logger.info(httperrorcode)
     #    timestamp =  event['parameters']['timestamp']
     #    httperrorcode = event['parameters']['httperrorcode']
-        logger.info(prompt)
+        logger.info(identifier)
    
         body = invoke_aws_rag_agent_supplier(identifier)
     
@@ -125,7 +126,7 @@ def lambda_handler(event, context):
     #    logger.info(httperrorcode)
     #    timestamp =  event['parameters']['timestamp']
     #    httperrorcode = event['parameters']['httperrorcode']
-        logger.info(prompt)
+        logger.info(identifier)
    
         body = invoke_aws_rag_agent_product(identifier)
 
