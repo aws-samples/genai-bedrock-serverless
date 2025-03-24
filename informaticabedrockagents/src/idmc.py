@@ -36,6 +36,9 @@ def invoke_aws_rag_agent_supplier(identifier):
             timeout=Timeout(50)
         )
 
+        print ("response is : ", response)
+        print ("idmcurl is : ", idmcurl)
+
         # Check if the response status is OK
         if response.status != 200:
             logger.error(f"HTTP error: {response.status}")
@@ -43,7 +46,8 @@ def invoke_aws_rag_agent_supplier(identifier):
         
         # Decode response data
         data = json.loads(response.data.decode("utf-8"))
-        return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
+        #return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
+        return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("executor_response", "No executor response found")
     
     except Exception as e:
         logger.error(f"Error fetching agent response: {e}")
@@ -74,6 +78,8 @@ def invoke_aws_rag_agent_product(identifier):
             headers=headers,
             timeout=Timeout(50)
         )
+        print ("response is : ", response)
+        print ("idmcurl is : ", idmcurl)
 
         # Check if the response status is OK
         if response.status != 200:
@@ -82,7 +88,8 @@ def invoke_aws_rag_agent_product(identifier):
         
         # Decode response data
         data = json.loads(response.data.decode("utf-8"))
-        return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
+        #return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("Planner", {}).get("executor_response", "No executor response found")
+        return data.get("enterprise_information", {}).get("UberPlannerPO", {}).get("executor_response", "No executor response found")
     
     except Exception as e:
         logger.error(f"Error fetching agent response: {e}")
