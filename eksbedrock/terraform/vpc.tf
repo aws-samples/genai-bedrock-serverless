@@ -27,8 +27,7 @@ module "vpc" {
 
   name                 = "eks-bedrock-vpc"
   cidr                 = var.vpc_cidr
-  #azs                 = data.aws_availability_zones.available.names
-  azs                  = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs                  = slice(data.aws_availability_zones.available.names, 0, 2) # select only first N AZs as needed
   private_subnets      = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24"]
   enable_nat_gateway   = true
